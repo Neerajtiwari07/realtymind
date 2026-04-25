@@ -1,0 +1,143 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .upload-container {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .upload-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        width: 100%;
+        max-width: 700px;
+    }
+
+    .upload-card h2 {
+        text-align: center;
+        color: #0d6efd;
+        margin-bottom: 10px;
+    }
+
+    .upload-card p {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-control, select {
+        border-radius: 10px !important;
+        border: 1px solid #ddd !important;
+        padding: 10px;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    }
+
+    .btn-submit {
+        width: 100%;
+        border-radius: 25px;
+        padding: 10px;
+        font-weight: 500;
+    }
+
+    .error-text {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="upload-container">
+
+    <div class="upload-card">
+
+        <h2>🏠 Upload Property</h2>
+        <p class="text-muted">Add your property details easily</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Property Type</label>
+                {{ form.property_type }}
+                {% if form.property_type.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.property_type.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.title.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.description.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.location.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Area (sqft)</label>
+                    {{ form.area_sqft }}
+                    {% if form.area_sqft.errors %}
+                        <div class="text-danger error-text">
+                            {{ form.area_sqft.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Price</label>
+                    {{ form.price }}
+                    {% if form.price.errors %}
+                        <div class="text-danger error-text">
+                            {{ form.price.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-submit">
+                🚀 Submit Property
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

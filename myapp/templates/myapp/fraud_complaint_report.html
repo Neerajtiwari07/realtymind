@@ -1,0 +1,157 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .container-custom {
+        padding: 30px;
+    }
+
+    .form-box {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .list-box {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+
+    .form-control, select, textarea {
+        border-radius: 10px !important;
+        padding: 10px;
+        border: 1px solid #ddd !important;
+    }
+
+    .form-control:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 5px rgba(220,53,69,0.3);
+    }
+
+    .btn-submit {
+        border-radius: 25px;
+        padding: 10px;
+        font-weight: 500;
+        width: 100%;
+    }
+
+    .complaint-item {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+    }
+
+    .status {
+        font-size: 13px;
+        padding: 3px 8px;
+        border-radius: 10px;
+        background: #fff3cd;
+        color: #856404;
+    }
+</style>
+
+<div class="container-custom">
+
+    <!-- HEADER -->
+    <h2>⚠️ Report Fraud Property</h2>
+    <p class="text-muted">Help keep the platform safe by reporting suspicious listings</p>
+
+    <div class="row g-4">
+
+        <!-- FORM -->
+        <div class="col-lg-6">
+            <div class="form-box">
+
+                <h5 class="mb-3">Submit Complaint</h5>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Property ID</label>
+                        {{ form.property_id }}
+                        {% if form.property_id.errors %}
+                            <div class="text-danger small">
+                                {{ form.property_id.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Reason</label>
+                        {{ form.reason }}
+                        {% if form.reason.errors %}
+                            <div class="text-danger small">
+                                {{ form.reason.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-danger btn-submit">
+                        🚨 Submit Complaint
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- RECENT COMPLAINTS -->
+        <div class="col-lg-6">
+            <div class="list-box">
+
+                <h5 class="mb-3">📋 Your Recent Complaints</h5>
+
+                {% if recent_complaints %}
+
+                    {% for item in recent_complaints %}
+                    <div class="complaint-item">
+
+                        <p class="mb-1">
+                            <strong>Property ID:</strong> {{ item.property_id }}
+                        </p>
+
+                        <p class="mb-1">
+                            <strong>Status:</strong>
+                            <span class="status">
+                                {{ item.get_status_display }}
+                            </span>
+                        </p>
+
+                        <p class="mb-0 text-muted">
+                            {{ item.reason|truncatechars:80 }}
+                        </p>
+
+                    </div>
+                    {% endfor %}
+
+                    <a href="{% url 'fraud_complaint_list' %}"
+                       class="btn btn-outline-secondary mt-3 w-100">
+                        View All Complaints →
+                    </a>
+
+                {% else %}
+
+                    <div class="text-center mt-4">
+                        <h6>No complaints yet 😌</h6>
+                        <p class="text-muted">Your reports will appear here</p>
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

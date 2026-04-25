@@ -1,0 +1,156 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .container-custom {
+        padding: 30px;
+    }
+
+    .filter-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .filter-box label {
+        font-weight: 500;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: 0.3s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .chart-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .chart-title {
+        color: #0d6efd;
+        margin-bottom: 15px;
+    }
+
+    .stats-box {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .pdf-btn {
+        border-radius: 20px;
+    }
+</style>
+
+<div class="container-custom">
+
+    <!-- HEADER -->
+    <div class="mb-3">
+        <h2>📊 Data Visualization Reports</h2>
+        <p class="text-muted">Smart graphical analysis of property data</p>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-box">
+        <form method="get" class="row g-3">
+
+            <div class="col-md-3">
+                <label>Location</label>
+                {{ form.location }}
+            </div>
+
+            <div class="col-md-3">
+                <label>Property Type</label>
+                {{ form.property_type }}
+            </div>
+
+            <div class="col-md-2">
+                <label>Min Price</label>
+                {{ form.min_price }}
+            </div>
+
+            <div class="col-md-2">
+                <label>Max Price</label>
+                {{ form.max_price }}
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    Apply 🔍
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-box">
+        <div>
+            <strong>Total Properties:</strong> {{ total_properties }}
+        </div>
+
+        <a href="{% url 'property_visualization_export_pdf' %}?{{ request.GET.urlencode }}"
+           class="btn btn-outline-primary pdf-btn">
+            📄 Download PDF
+        </a>
+    </div>
+
+    <!-- CHART GRID -->
+    <div class="row g-3">
+
+        {% if charts.price_vs_area_chart %}
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h5 class="chart-title">📈 Price vs Area</h5>
+                <img class="img-fluid" src="data:image/png;base64,{{ charts.price_vs_area_chart }}">
+            </div>
+        </div>
+        {% endif %}
+
+        {% if charts.location_avg_price_chart %}
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h5 class="chart-title">📍 Location-wise Price</h5>
+                <img class="img-fluid" src="data:image/png;base64,{{ charts.location_avg_price_chart }}">
+            </div>
+        </div>
+        {% endif %}
+
+        {% if charts.property_type_avg_price_chart %}
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h5 class="chart-title">🏠 Property Type Comparison</h5>
+                <img class="img-fluid" src="data:image/png;base64,{{ charts.property_type_avg_price_chart }}">
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    {% if not charts.price_vs_area_chart and not charts.location_avg_price_chart and not charts.property_type_avg_price_chart %}
+        <div class="text-center mt-5">
+            <h5>No Data Found 😕</h5>
+            <p class="text-muted">Try changing filters</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

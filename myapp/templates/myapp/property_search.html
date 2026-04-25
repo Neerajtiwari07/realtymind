@@ -1,0 +1,153 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .container-custom {
+        padding: 30px;
+    }
+
+    .filter-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .result-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .table thead {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .btn-sm-custom {
+        font-size: 12px;
+        border-radius: 20px;
+        padding: 4px 10px;
+    }
+</style>
+
+<div class="container-custom">
+
+    <!-- HEADER -->
+    <h2>🔍 Property Search</h2>
+    <p class="text-muted">Search by location, price, and property type</p>
+
+    <!-- FILTER -->
+    <div class="filter-box">
+        <form method="get" class="row g-3">
+
+            <div class="col-md-3">
+                <label class="form-label">Location</label>
+                {{ form.location }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Property Type</label>
+                {{ form.property_type }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Min Price</label>
+                {{ form.min_price }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Max Price</label>
+                {{ form.max_price }}
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    Search 🔍
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">Please fix the search filters.</div>
+    {% endif %}
+
+    <!-- RESULTS -->
+    <div class="result-box">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Results</h5>
+            <small class="text-muted">{{ properties|length }} properties found</small>
+        </div>
+
+        {% if properties %}
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Area</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for property in properties %}
+                    <tr>
+                        <td>{{ property.get_property_type_display }}</td>
+                        <td><strong>{{ property.title }}</strong></td>
+                        <td>{{ property.location }}</td>
+                        <td>{{ property.area_sqft }} sqft</td>
+                        <td class="text-primary fw-bold">₹ {{ property.price }}</td>
+                        <td>
+
+                            <a href="{% url 'fraud_complaint_report' %}?property_id={{ property.id }}"
+                               class="btn btn-outline-danger btn-sm btn-sm-custom">
+                                Report
+                            </a>
+
+                            <a href="{% url 'feedback_rating' %}?property_id={{ property.id }}"
+                               class="btn btn-outline-info btn-sm btn-sm-custom ms-1">
+                                Rate
+                            </a>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+            <div class="text-center mt-4">
+                <h5>No Properties Found 😕</h5>
+                <p class="text-muted">Try changing filters</p>
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

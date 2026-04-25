@@ -1,0 +1,177 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .container-custom {
+        padding: 30px;
+    }
+
+    .filter-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stats-box {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: 0.3s;
+    }
+
+    .card-custom:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .price {
+        color: #0d6efd;
+        font-weight: bold;
+    }
+
+    .score {
+        background: #e7f1ff;
+        color: #0d6efd;
+        padding: 5px 10px;
+        border-radius: 10px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .btn-sm-custom {
+        border-radius: 20px;
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+</style>
+
+<div class="container-custom">
+
+    <!-- HEADER -->
+    <h2>🤖 ML Property Recommendation</h2>
+    <p class="text-muted">
+        Smart recommendations based on user behavior & property data
+    </p>
+
+    <!-- FILTER -->
+    <div class="filter-box">
+        <form method="get" class="row g-3">
+
+            <div class="col-md-3">
+                <label class="form-label">Budget</label>
+                {{ form.budget }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Location</label>
+                {{ form.location }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Property Type</label>
+                {{ form.property_type }}
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    Recommend 🤖
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-box">
+        <strong>📊 Historical Feedback Used:</strong> {{ feedback_count }}
+    </div>
+
+    <!-- RESULTS -->
+    {% if recommendations %}
+    <div class="row g-3">
+
+        {% for item, score in recommendations %}
+        <div class="col-md-6">
+
+            <div class="card-custom">
+
+                <h5>{{ item.title }}</h5>
+
+                <p class="text-muted mb-1">
+                    📍 {{ item.location }}
+                </p>
+
+                <p class="mb-1">
+                    🏠 {{ item.get_property_type_display }}
+                </p>
+
+                <p class="mb-1">
+                    📐 {{ item.area_sqft }} sqft
+                </p>
+
+                <p class="price">
+                    ₹ {{ item.price }}
+                </p>
+
+                <div class="score">
+                    ⭐ Score: {{ score }}%
+                </div>
+
+                <div class="mt-2">
+
+                    <form method="post" action="{% url 'property_recommendation_feedback' %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="property_id" value="{{ item.id }}">
+                        <input type="hidden" name="action" value="like">
+                        <input type="hidden" name="next_query" value="{{ query_string }}">
+                        <button type="submit" class="btn btn-success btn-sm btn-sm-custom">
+                            👍 Like
+                        </button>
+                    </form>
+
+                    <form method="post" action="{% url 'property_recommendation_feedback' %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="property_id" value="{{ item.id }}">
+                        <input type="hidden" name="action" value="dislike">
+                        <input type="hidden" name="next_query" value="{{ query_string }}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm btn-sm-custom">
+                            👎 Dislike
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+        <div class="text-center mt-5">
+            <h5>No Recommendation Found 😕</h5>
+            <p class="text-muted">Try changing filters</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

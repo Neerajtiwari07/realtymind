@@ -1,0 +1,134 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .signup-container {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .signup-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .signup-card h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    }
+
+    .btn-custom {
+        width: 100%;
+        border-radius: 25px;
+        font-weight: 500;
+        padding: 10px;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .login-link a {
+        color: #0d6efd;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    .error-text {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="signup-container">
+
+    <div class="signup-card">
+
+        <h2>📝 Create Account</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.username.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.email.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.password1.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div class="text-danger error-text">
+                        {{ form.password2.errors|join:", " }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-custom">
+                Signup 🚀
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .dashboard-container {
+        padding: 30px;
+    }
+
+    .welcome-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .card-custom {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        transition: 0.3s;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .card-custom:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .card-custom a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .card-icon {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .summary-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .summary-box ul {
+        padding-left: 20px;
+    }
+</style>
+
+<div class="dashboard-container">
+
+    <!-- Welcome -->
+    <div class="welcome-box">
+        <h2>👋 Welcome, {{ user.username }}</h2>
+        <p class="text-muted">Your Smart Realty Dashboard</p>
+    </div>
+
+    <!-- ACTION CARDS -->
+    <div class="row g-3">
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">🏠</div>
+                <a href="{% url 'property_upload' %}">Add Property</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">🔍</div>
+                <a href="{% url 'property_search' %}">Search Property</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">📊</div>
+                <a href="{% url 'property_price_analysis' %}">Price Analysis</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">📈</div>
+                <a href="{% url 'property_visualization' %}">Visual Reports</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">🤖</div>
+                <a href="{% url 'property_recommendation' %}">ML Recommendation</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">⚠️</div>
+                <a href="{% url 'fraud_complaint_report' %}">Report Fraud</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">⭐</div>
+                <a href="{% url 'feedback_rating' %}">Feedback</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-custom">
+                <div class="card-icon">📁</div>
+                <a href="{% url 'my_properties' %}">My Properties</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary-box">
+        <h4>📌 Your Property Summary</h4>
+        <p>Total Properties: <strong>{{ total_properties }}</strong></p>
+
+        {% if property_counts %}
+            <ul>
+                {% for item in property_counts %}
+                    <li>{{ item.property_type|title }}: {{ item.total }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No properties uploaded yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

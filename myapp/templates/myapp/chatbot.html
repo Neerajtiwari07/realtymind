@@ -1,0 +1,203 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+  body {
+    background: #f5f7fb;
+  }
+
+  .chat-container {
+    max-width: 900px;
+    margin: 30px auto;
+  }
+
+  .chat-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+
+  /* HEADER */
+  .chat-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chat-header h5 {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    background: #28a745;
+    border-radius: 50%;
+  }
+
+  /* CHAT BODY */
+  .chat-body {
+    height: 420px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fafbff;
+  }
+
+  .msg-row {
+    margin-bottom: 12px;
+  }
+
+  .msg {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 75%;
+    font-size: 14px;
+  }
+
+  .user {
+    text-align: right;
+  }
+
+  .user .msg {
+    background: #0d6efd;
+    color: white;
+  }
+
+  .bot {
+    text-align: left;
+  }
+
+  .bot .msg {
+    background: #e9ecef;
+  }
+
+  .time {
+    font-size: 11px;
+    color: #999;
+    margin-top: 3px;
+  }
+
+  /* INPUT */
+  .chat-input {
+    padding: 15px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+  }
+
+  .chat-input input {
+    border-radius: 25px;
+    padding: 10px 15px;
+  }
+
+  .btn-send {
+    border-radius: 25px;
+    padding: 10px 20px;
+  }
+
+  /* SUGGESTIONS */
+  .suggestions {
+    padding: 10px 20px;
+    border-top: 1px solid #eee;
+  }
+
+  .chip {
+    display: inline-block;
+    background: #e7f1ff;
+    color: #0d6efd;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin: 3px;
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    background: #d0e3ff;
+  }
+
+</style>
+
+<div class="chat-container">
+
+  <div class="chat-card">
+
+    <!-- HEADER -->
+    <div class="chat-header">
+      <div class="status-dot"></div>
+      <h5>🤖 RealtyMind Assistant</h5>
+    </div>
+
+    <!-- CHAT BODY -->
+    <div class="chat-body" id="chatBox">
+
+      {% if user_message %}
+      <div class="msg-row user">
+        <div class="msg">{{ user_message }}</div>
+        <div class="time">You</div>
+      </div>
+      {% endif %}
+
+      {% if chatbot_reply %}
+      <div class="msg-row bot">
+        <div class="msg">{{ chatbot_reply }}</div>
+        <div class="time">Bot</div>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- QUICK SUGGESTIONS -->
+    <div class="suggestions">
+      <span class="chip" onclick="fillQuery('cheap flat')">cheap flat</span>
+      <span class="chip" onclick="fillQuery('low rent room')">low rent room</span>
+      <span class="chip" onclick="fillQuery('land in Lucknow')">land in Lucknow</span>
+      <span class="chip" onclick="fillQuery('best property under 10 lakh')">under 10 lakh</span>
+    </div>
+
+    <!-- INPUT -->
+    <form method="post" class="chat-input">
+      {% csrf_token %}
+      <input 
+        type="text" 
+        name="message" 
+        id="msgInput"
+        class="form-control" 
+        placeholder="Ask something..." 
+        value="{{ user_message }}" 
+        required
+      >
+      <button type="submit" class="btn btn-primary btn-send">
+        ➤
+      </button>
+    </form>
+
+  </div>
+
+  {% if detected_intent %}
+    <div class="mt-2 text-muted small text-center">
+      🔍 Detected: {{ detected_intent }}
+    </div>
+  {% endif %}
+
+</div>
+
+<!-- JS -->
+<script>
+  // Auto scroll
+  const chatBox = document.getElementById("chatBox");
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Fill suggestions
+  function fillQuery(text) {
+    document.getElementById("msgInput").value = text;
+  }
+</script>
+
+{% endblock %}

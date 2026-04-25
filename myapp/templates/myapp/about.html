@@ -1,0 +1,121 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .container-custom {
+        padding: 40px;
+    }
+
+    .hero-box {
+        background: linear-gradient(135deg, #0d6efd, #4dabf7);
+        color: white;
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .section-box {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: 0.3s;
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container-custom">
+
+    <!-- HERO -->
+    <div class="hero-box">
+        <h1>🏠 About RealtyMind</h1>
+        <p>Smart AI-powered platform for property search & recommendation</p>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="section-box">
+        <h4>📌 Our Mission</h4>
+        <p class="text-muted">
+            RealtyMind aims to simplify property searching by using Artificial Intelligence 
+            and Data Analysis. We help users find the best properties based on their needs, 
+            budget, and preferences.
+        </p>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section-box">
+        <h4 class="mb-3">✨ What We Offer</h4>
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h6>AI Recommendation</h6>
+                    <p class="text-muted">Smart suggestions based on user behavior</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h6>Price Analysis</h6>
+                    <p class="text-muted">Compare property prices easily</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">⚠️</div>
+                    <h6>Fraud Detection</h6>
+                    <p class="text-muted">Report suspicious listings securely</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+   <!-- PROJECT INFO -->
+<div class="section-box">
+    <h4>🚀 About the Project</h4>
+    <p class="text-muted">
+        RealtyMind is an AI-powered real estate platform designed to simplify property search, 
+        analysis, and decision-making. The system allows users to explore properties, analyze 
+        price trends, and receive intelligent recommendations based on their preferences.
+    </p>
+
+    <p class="text-muted">
+        It integrates modern technologies like Django for backend development, Machine Learning 
+        for recommendation systems, and Data Visualization for better insights. The platform also 
+        includes features like fraud reporting, feedback systems, and chatbot assistance to 
+        enhance user experience and build trust.
+    </p>
+</div>
+</div>
+
+{% endblock %}

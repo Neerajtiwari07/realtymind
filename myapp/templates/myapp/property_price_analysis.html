@@ -1,0 +1,231 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f5f7fb;
+    }
+
+    .container-custom {
+        padding: 30px;
+    }
+
+    .filter-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .stat-value {
+        font-size: 22px;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+
+    .section-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .chart-box {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* 🔥 IMPORTANT FIX */
+    .chart-wrapper {
+        height: 300px;
+        max-width: 700px;
+        margin: auto;
+    }
+</style>
+
+<div class="container-custom">
+
+    <h2>📊 Property Price Analysis</h2>
+    <p class="text-muted">Analyze minimum, average, and maximum prices</p>
+
+    <!-- FILTER -->
+    <div class="filter-box">
+        <form method="get" class="row g-3">
+
+            <div class="col-md-3">
+                <label class="form-label">Location</label>
+                {{ form.location }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Property Type</label>
+                {{ form.property_type }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Min Price</label>
+                {{ form.min_price }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Max Price</label>
+                {{ form.max_price }}
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    Apply 🔍
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    {% if analysis.minimum_price is not None %}
+
+    <!-- STATS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h6>Minimum Price</h6>
+                <div class="stat-value">₹ {{ analysis.minimum_price|floatformat:2 }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h6>Average Price</h6>
+                <div class="stat-value">₹ {{ analysis.average_price|floatformat:2 }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h6>Maximum Price</h6>
+                <div class="stat-value">₹ {{ analysis.maximum_price|floatformat:2 }}</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOWEST RENT -->
+    <div class="section-box">
+        <h5>🏠 Lowest Rent Property</h5>
+
+        {% if analysis.lowest_rent_property %}
+            <p>
+                <strong>{{ analysis.lowest_rent_property.title }}</strong>
+                ({{ analysis.lowest_rent_property.location }}) -
+                ₹ {{ analysis.lowest_rent_property.price }}
+            </p>
+        {% else %}
+            <p class="text-muted">No rental property found.</p>
+        {% endif %}
+    </div>
+
+    <!-- CHEAPEST -->
+    <div class="section-box">
+        <h5>💰 Cheapest Properties</h5>
+
+        {% if analysis.cheapest_properties %}
+            <ul class="list-group">
+                {% for item in analysis.cheapest_properties %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            {{ item.get_property_type_display }} |
+                            {{ item.title }} |
+                            {{ item.location }}
+                        </span>
+                        <strong>₹ {{ item.price }}</strong>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No data available.</p>
+        {% endif %}
+    </div>
+
+    <!-- CHART -->
+    <div class="chart-box">
+        <h5>📈 Price Comparison</h5>
+
+        <div class="chart-wrapper">
+            <canvas id="priceAnalysisChart"></canvas>
+        </div>
+    </div>
+
+    {{ chart_data|json_script:"price-chart-data" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const priceChartData = JSON.parse(
+            document.getElementById("price-chart-data").textContent
+        );
+
+        const ctx = document.getElementById("priceAnalysisChart");
+
+        if (ctx && priceChartData.length === 3) {
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: ["Minimum", "Average", "Maximum"],
+                    datasets: [{
+                        label: "Price (₹)",
+                        data: priceChartData,
+                        backgroundColor: ["#0d6efd", "#20c997", "#dc3545"],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+    {% else %}
+        <div class="text-center mt-5">
+            <h5>No Data Available 😕</h5>
+            <p class="text-muted">Try adjusting filters</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
