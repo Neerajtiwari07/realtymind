@@ -15,7 +15,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS = ['realtymind.onrender.com']
+DEBUG = False
+
+ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
